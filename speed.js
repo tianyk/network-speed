@@ -11,10 +11,12 @@ const ms = require('ms');
 const uuid = require('uuid');
 const mime = require('mime-types');
 const debug = require('debug')('network-speed');
-const Log = require('log');
+// ipip.net
 const datx = require('ipip-datx');
 const ipCity = new datx.City(path.join(__dirname, 'data/17monipdb/17monipdb.datx'));
 
+// logs
+const Log = require('log');
 const LOG_DIR = argv.log || path.join(__dirname, 'logs');
 require('mkdirp').sync(LOG_DIR);
 const ACCESS_LOG = new Log('info', fs.createWriteStream(path.join(LOG_DIR, 'access.log')));
@@ -41,10 +43,9 @@ const INDEX_TPL = ejs.compile(`<!DOCTYPE html>
             line-height: 14px;
 
             /* box-model */
-            box-sizing: border-box;
             width: 100px;
             /* 宽度充满整个div，配合box-sizing包含内边距边框 */
-            height: 34px;
+            height: 32px;
             /* 重置 padding */
             padding-top: 0;
             padding-right: 0;
@@ -117,15 +118,31 @@ const INDEX_TPL = ejs.compile(`<!DOCTYPE html>
 </body>
 </html>`, { catch: true });
 
+function serverExtend(req, res) {
+    // method 
+    res.redirect = function (location) {
+        if (!location.startsWith('http:')) location = `http://${req.headers.host}${location}`;
+        res.statusCode = 302;
+        res.setHeader('location', location);
+        res.end(`redirect: ${location}`);
+    };
+
+    // field
+    req.ip = req.socket.localAddress;
+    req.ips = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.localAddress).split(',');
+    req.cookies = cookie.parse(req.headers.cookie || '');
+    
+    let { pathname, query } = url.parse(req.url, true);
+    req.query = query;
+    req.pathname = pathname;
+}
+
 const server = http.createServer((req, res) => {
-    let ip = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.localAddress).split(',')[0];
+    // extend
+    serverExtend(req, res);
+
+    let { ip, pathname, query, cookies } = req;
     let city = (ipCity.findSync(ip) || ['-', '-', '-', '-']).join('-');
-
-    let urlRaw = req.url;
-    let { pathname, query } = url.parse(urlRaw, true);
-
-    let cookieRaw = req.headers.cookie || '';
-    let cookies = cookie.parse(cookieRaw);
 
     ACCESS_LOG.info(`${req.method}, ${pathname}, ${cookies.network || '-'}, ${cookies.uid || '-'}, ${ip}, "${city}", "${req.headers['user-agent']}"`);
 
@@ -148,23 +165,17 @@ const server = http.createServer((req, res) => {
         res.end(INDEX_TPL({ network: cookies.network }));
     } else if (pathname === '/clean') {
         // clean cookie 
-        res.statusCode = 302;
-        let redirect = `http://${req.headers.host}/`;
-
-        let setCookie = cookie.serialize('network', '', { expires: new Date('1970-01-01 00:00:00') }); // 'Thu, 01 Jan 1970 00:00:00 GMT'
+        let setCookie = cookie.serialize('network', '', { expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT') });
+        let location = `http://${req.headers.host}/`;
         res.setHeader('set-cookie', setCookie);
-        res.setHeader('location', redirect);
-        res.end(`redirect: ${redirect}`);
+
+        res.redirect('/');
     } else if (pathname === '/feedback') {
         let network = query.network;
         // let tdoa = cookies.network;
         FEEDBACK_LOG.info(`${req.method}, ${pathname}, ${cookies.network || '-'}, ${network || '-'}, ${cookies.uid || '-'}, ${ip}, "${city}", "${req.headers['user-agent']}"`);
 
-        // redirect / 
-        res.statusCode = 302;
-        let redirect = `http://${req.headers.host}/`;
-        res.setHeader('location', redirect);
-        res.end(`redirect: ${redirect}`);
+        res.redirect('/');
     } else {
         res.statusCode = 404;
         res.end();

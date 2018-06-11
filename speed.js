@@ -44,7 +44,6 @@ const INDEX_TPL = ejs.compile(`<!DOCTYPE html>
 
             /* box-model */
             width: 100px;
-            /* 宽度充满整个div，配合box-sizing包含内边距边框 */
             height: 32px;
             /* 重置 padding */
             padding-top: 0;

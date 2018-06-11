@@ -19,8 +19,8 @@ const ipCity = new datx.City(path.join(__dirname, 'data/17monipdb/17monipdb.datx
 const Log = require('log');
 const LOG_DIR = argv.log || path.join(__dirname, 'logs');
 require('mkdirp').sync(LOG_DIR);
-const ACCESS_LOG = new Log('info', fs.createWriteStream(path.join(LOG_DIR, 'access.log')));
-const FEEDBACK_LOG = new Log('info', fs.createWriteStream(path.join(LOG_DIR, 'feedback.log')));
+const ACCESS_LOG = new Log('info', fs.createWriteStream(path.join(LOG_DIR, 'access.log'), {flags: 'a'}));
+const FEEDBACK_LOG = new Log('info', fs.createWriteStream(path.join(LOG_DIR, 'feedback.log'), {flags: 'a'}));
 
 // cookie name
 const COOKIE_NETWORK = 'network';

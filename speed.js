@@ -111,9 +111,9 @@ const INDEX_TPL = ejs.compile(`<!DOCTYPE html>
 
     <h3>你使用的网络</h3>
     <form action="/feedback" method="get">
-        <label for="network">你的网络：(e.g. 3G/4G/10M/100M/<i>n</i>M)</label>
+        <label for="network">你的网络：(e.g. 3G/4G/20M/100M/<i>n</i>M)</label>
         <br>
-        <input type="text" name="network" placeholder="100M"><!-- --><button type="submit">提交</button>
+        <input type="text" name="network"><!-- --><button type="submit">提交</button>
     </form>
 </body>
 </html>`, { catch: true });

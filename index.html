@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Network Speed</title>
+    <% if (typeof network === 'undefined') { %>
+    <script type="text/javascript" src="speed.js?rt=<%= Date.now() %>"></script>
+    <% } %>
+    <style>
+        body {
+            font: 13px Helvetica, Arial, sans-serif;
+            line-height: 1.62;
+        }
+
+        input {
+            /* typography */
+            line-height: 14px;
+
+            /* box-model */
+            width: 100px;
+            height: 32px;
+            /* 重置 padding */
+            padding-top: 0;
+            padding-right: 0;
+            padding-bottom: 0;
+            padding-left: 10px;
+
+            /* visual */
+            border-top: #96B432 1px solid;
+            border-left: #96B432 1px solid;
+            border-bottom: #96B432 1px solid;
+            border-right: none;
+        }
+
+        input:focus {
+            /* visual */
+            outline: none;
+            border-top: 1px #69882a solid;
+            border-bottom: 1px #69882a solid;
+            border-left: 1px #69882a solid;
+            border-right: none;
+        }
+
+        button {
+            /* box-model */
+            box-sizing: content-box;
+            height: 32px;
+            margin: 0;
+            padding: 0 8px;
+
+            /* visual */
+            border: 1px #96B432 solid;
+            background-color: #96B432;
+        }
+
+        button:focus {
+            outline: none;
+            /* 取消轮廓 */
+            border: 1px #69882a solid;
+        }
+
+        input[type=submit],
+        input[type=reset],
+        input[type=button],
+        input[type=text],
+        input[type=password],
+        button[type=button],
+        button[type=submit] {
+            /* ios 边框圆角 */
+            -webkit-appearance: none;
+            border-radius: 0;
+            /* 取消轮廓 */
+            outline: none; 
+        }
+    </style>
+</head>
+<body>
+    <h3>网络延迟</h3>
+    <span id="network">
+    <% if (typeof network !== 'undefined') { %>
+        <%= network %>ms
+    <% } %> 
+    </span> <a href="/clean">重测</a>
+
+    <h3>你使用的网络</h3>
+    <form action="/feedback" method="get">
+        <label for="network">(e.g. 3G/4G/20M/100M/<i>n</i>M)</label>
+        <br>
+        <input type="text" name="network"><!-- --><button type="submit">提交</button>
+    </form>
+</body>
+</html>

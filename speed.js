@@ -140,7 +140,8 @@ const server = http.createServer((req, res) => {
     // extend
     serverExtend(req, res);
 
-    let { ip, pathname, query, cookies } = req;
+    let { ips, pathname, query, cookies } = req;
+    let ip = ips[0];
     let city = (ipCity.findSync(ip) || ['-', '-', '-', '-']).join('-');
 
     ACCESS_LOG.info(`${req.method}, ${pathname}, ${cookies.network || '-'}, ${cookies.uid || '-'}, ${ip}, "${city}", "${req.headers['user-agent']}"`);

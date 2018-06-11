@@ -119,9 +119,9 @@ const INDEX_TPL = ejs.compile(`<!DOCTYPE html>
 
 function serverExtend(req, res) {
     // method 
-    res.redirect = function (location) {
+    res.redirect = function (location, status = 302) {
         if (!location.startsWith('http:')) location = `http://${req.headers.host}${location}`;
-        res.statusCode = 302;
+        res.statusCode = status;
         res.setHeader('location', location);
         res.end(`redirect: ${location}`);
     };
@@ -130,7 +130,7 @@ function serverExtend(req, res) {
     req.ip = req.socket.localAddress;
     req.ips = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.localAddress).split(',');
     req.cookies = cookie.parse(req.headers.cookie || '');
-    
+
     let { pathname, query } = url.parse(req.url, true);
     req.query = query;
     req.pathname = pathname;

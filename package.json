@@ -1,0 +1,23 @@
+{
+  "name": "network-speed",
+  "version": "1.0.0",
+  "description": "检测网络状况",
+  "main": "speed.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tyk",
+  "license": "ISC",
+  "dependencies": {
+    "cookie": "^0.3.1",
+    "debug": "^3.1.0",
+    "ejs": "^2.6.1",
+    "ipip-datx": "^0.2.2",
+    "log": "^1.4.0",
+    "mime-types": "^2.1.18",
+    "mkdirp": "^0.5.1",
+    "ms": "^2.1.1",
+    "uuid": "^3.2.1",
+    "yargs": "^11.0.0"
+  }
+}

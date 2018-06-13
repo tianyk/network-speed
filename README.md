@@ -1,3 +1,19 @@
+## 测量资源加载时间
+
+``` html 
+<html>
+<head>
+    <script type="text/javascript" src="speed.js?rt=${server_time}"></script>
+    ... 
+</head>
+<body>
+    ... 
+</body>
+</html>
+```
+
+![](data/resource-loading.jpeg)
+
 ### 启动
 ```
 $ nohup node speed.js --host=127.0.0.1 --port=9099 >/dev/null 2>&1 & 
